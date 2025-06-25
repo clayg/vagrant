@@ -339,8 +339,9 @@ function New-VagrantVMXML {
         $processors = $VMConfig.configuration.settings.processors.count."#text"
     }
     $notes = (Select-Xml -XML $VMConfig -XPath "//notes").node."#text"
-    $memory = (Select-Xml -XML $VMConfig -XPath "//memory").node.Bank
-    if ($memory.dynamic_memory_enabled."#text" -eq "True") {
+    # The variable $Memory is already defined as int, avoid $memory
+    $memory_xml = (Select-Xml -XML $VMConfig -XPath "//memory").node.Bank
+    if ($memory_xml.dynamic_memory_enabled."#text" -eq "True") {
         $dynamicmemory = $True
     }
     else {
@@ -358,7 +359,8 @@ function New-VagrantVMXML {
         $MemoryMinimumBytes = ($memory.reservation."#text" -as [int]) * 1MB
     }
 
-    if($MaxMemory -ne $null) {
+    # MaxMemory is defined as int; if you assign $null it evaluates to 0
+    if($MaxMemory -ne 0) {
         $dynamicmemory = $true
         $MemoryMaximumBytes = $MaxMemory * 1MB
     }
