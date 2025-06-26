@@ -13,6 +13,7 @@ module VagrantPlugins
 
         def self.smb_installed(env)
           psv = Vagrant::Util::PowerShell.version.to_i
+          @@logger.info("PowerShell Version #{psv}")
           if psv < 3
             return false
           end
